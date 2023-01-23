@@ -11,9 +11,9 @@
     <h1 style="text-align: center; font-size: xx-large; margin: 25px; padding: auto;">Counter Project</h1>
     <div style="display: flex; justify-content: center;">
     <div style="display: flex; justify-content: center; flex-direction: column; padding: 20px;">
-      
+      {% csrf_token %}
         <h1 style="text-align: center;" id="count" value="0">0</h1>
-  <button style="font-size: 50px; width: 100px; " id="para" > <i class="fa-solid fa-thumbs-up"></i></button>
+  <button style="font-size: 50px; width: 100px; " id="para" onclick="getNumber()" > <i class="fa-solid fa-thumbs-up"></i></button>
 
 </div>
     <div style="display: flex; justify-content: center; flex-direction: column; ">
@@ -24,7 +24,7 @@
   </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/95597e8978.js" crossorigin="anonymous"></script>
-    <script>
+    <!-- <script>
         let likecount=0;
         let dislikecount=0;
        document.getElementById("para").onclick=function(){
@@ -38,6 +38,66 @@ document.getElementById("dislike").innerHTML=dislikecount;
 
 };
 
+    </script> -->
+    <script>
+        let data;
+        let ans; 
+
+        async function makeRequest(url,method,body){
+          let  headers={
+            'X-Requested-With':'XMLHttpRequest',
+            'Content-type':'appliation/json',
+            'charset':'utf8'
+        }
+
+        if (method=='post'){
+            const csrf=document.querySelector('[name=csrfmiddlewaretoken]').value
+            headers['X-CSRFToken']=csrf 
+        }
+
+        let response=await fetch(url,{
+            method:method,
+            headers:headers,
+            body:body
+        })
+        return await response.json()
+        }
+async function getNumber(){
+    
+ let data =await makeRequest('/star-wars/people/','get')
+    console.log(await data)
+      ans=data[0].count;
+      var sum = 0;
+    for (var i = 0; i < data.length; i++) {
+      sum += data[i].count
+    }
+    // console.log(ans)
+    document.getElementById('para').addEventListener('click',getfloatnumber);
+    document.getElementById('count').innerHTML=sum;
+    }
+async function getfloatnumber(e){
+    fetch("/star-wars/people/", {
+
+// Adding method type
+method: "POST",
+
+// Adding body or contents to send
+body: JSON.stringify({
+count:ans
+}),
+// Adding headers to the request
+headers: {
+"Content-type": "application/json; charset=UTF-8"
+}
+})
+
+// Converting to JSON
+.then(response => response.json())
+
+// Displaying results to console
+.then(json => console.log(json));
+    }
+   
     </script>
 </body>
 </html>
