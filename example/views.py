@@ -9,10 +9,13 @@ from example.models import Like, Dislike
 # Create your views here.
 count=0
 def index(request):
+    number =0
     if request.headers.get('X-Requested-With')=='XMLHttpRequest':
-        number= randint(1,10)
+        number= 0
         return JsonResponse({'number':number})
-    return render(request,'example/index.html')
+    return render(request,'example/index.html',{
+        'number':number
+    })
 
 
 class PersonViewSet(viewsets.ModelViewSet):

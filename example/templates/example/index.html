@@ -12,33 +12,83 @@
     <div style="display: flex; justify-content: center;">
     <div style="display: flex; justify-content: center; flex-direction: column; padding: 20px;">
       {% csrf_token %}
-        <h1 style="text-align: center;" id="count" value="0">0</h1>
+        <h1 style="text-align: center;" id="count" value="0">{{number }}</h1>
   <button style="font-size: 50px; width: 100px; " id="para" onclick="getNumber()" > <i class="fa-solid fa-thumbs-up"></i></button>
 
 </div>
     <div style="display: flex; justify-content: center; flex-direction: column; ">
-        <h1 style="text-align: center;" id="dislike">0</h1>
-  <button style="font-size: 50px; width: 100px; " id="dispara" > <i class="fa-solid fa-thumbs-down"></i></button>
+      {% csrf_token %}
+        <h1 style="text-align: center;" id="dislike">{{number}}</h1>
+  <button style="font-size: 50px; width: 100px; " id="dispara"  onclick="getNumb()"> <i class="fa-solid fa-thumbs-down"></i></button>
 
 </div>
   </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/95597e8978.js" crossorigin="anonymous"></script>
-    <!-- <script>
-        let likecount=0;
-        let dislikecount=0;
-       document.getElementById("para").onclick=function(){
-        likecount+=1;
-        
-document.getElementById("count").innerHTML=likecount;
-       };
-       document.getElementById("dispara").onclick=function(){
-        dislikecount+=1;
-document.getElementById("dislike").innerHTML=dislikecount;
+    <script>
+            let dataa;
+        let anss; 
 
-};
+        async function makeReq(url,method,body){
+          let  headers={
+            'X-Requested-With':'XMLHttpRequest',
+            'Content-type':'appliation/json',
+            'charset':'utf8'
+        }
 
-    </script> -->
+        if (method=='post'){
+            const csrf=document.querySelector('[name=csrfmiddlewaretoken]').value
+            headers['X-CSRFToken']=csrf 
+        }
+
+        let response=await fetch(url,{
+            method:method,
+            headers:headers,
+            body:body
+        })
+        return await response.json()
+        }
+async function getNumb(){
+    
+ let dataa =await makeRequest('/star-wars/species/','get')
+    console.log(await dataa)
+      anss=1
+      var summ = 0;
+    for (var i = 0; i < dataa.length; i++) {
+
+      summ += dataa[i].temp
+      console.log(typeof(dataa[i].temp))
+      console.log(summ)
+    }
+    document.getElementById('dislike').innerHTML=summ;
+    document.getElementById('dispara').addEventListener('click',getfloatnumb);
+    }
+    
+async function getfloatnumb(e){
+    fetch("/star-wars/species/", {
+
+// Adding method type
+method: "POST",
+
+// Adding body or contents to send
+body: JSON.stringify({
+temp:anss
+}),
+// Adding headers to the request
+headers: {
+"Content-type": "application/json; charset=UTF-8"
+}
+})
+
+// Converting to JSON
+.then(response => response.json())
+
+// Displaying results to console
+.then(json => console.log(json));
+    }
+   
+
+    </script>
     <script>
         let data;
         let ans; 
@@ -66,14 +116,14 @@ async function getNumber(){
     
  let data =await makeRequest('/star-wars/people/','get')
     console.log(await data)
-      ans=data[0].count;
+      ans=1;
       var sum = 0;
     for (var i = 0; i < data.length; i++) {
       sum += data[i].count
     }
     // console.log(ans)
-    document.getElementById('para').addEventListener('click',getfloatnumber);
     document.getElementById('count').innerHTML=sum;
+    document.getElementById('para').addEventListener('click',getfloatnumber);
     }
 async function getfloatnumber(e){
     fetch("/star-wars/people/", {
